@@ -7,7 +7,8 @@ public class EnemyDetection : MonoBehaviour
     public enum EnemyState
     {
         Patrol,
-        Chase
+        Chase,
+        Search
     }
 
     private Renderer enemyRenderer;
@@ -18,6 +19,7 @@ public class EnemyDetection : MonoBehaviour
     public float detectionRange = 3f;
     public float patrolSpeed = 2f;
     public float chaseSpeed = 4f;
+    public float searchSpeed = 3f;
     public float stoppingDistance = 1f;
     
     public float waitDuration = 2f;
@@ -48,9 +50,9 @@ public class EnemyDetection : MonoBehaviour
             lastKnownPosition  = player.position;
             ChangeState(EnemyState.Chase);
         }
-        else
+        else if (EnemyState.Chase == currentState)
         {
-            ChangeState(EnemyState.Patrol);
+            ChangeState(EnemyState.Search);
         }
 
         // Step 2: Execute the current behavior
@@ -63,6 +65,31 @@ public class EnemyDetection : MonoBehaviour
             case EnemyState.Chase:
                 ChasePlayer();
                 break;
+            
+            case EnemyState.Search:
+                SearchLastKnownPosition();
+                break;
+        }
+    }
+    
+    void SearchLastKnownPosition()
+    {
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            lastKnownPosition,
+            searchSpeed * Time.deltaTime
+        );
+
+        float distance = Vector3.Distance(
+            transform.position,
+            lastKnownPosition
+        );
+
+        // 2. If distance is less than 0.5f,
+        //    switch to Patrol.
+        if (distance < 0.5f)
+        {
+            ChangeState(EnemyState.Patrol);
         }
     }
 
@@ -95,6 +122,9 @@ public class EnemyDetection : MonoBehaviour
             case EnemyState.Chase:
                 ChangeEnemyColor(Color.red);
                 waitTimer = 0f;
+                break;
+            case EnemyState.Search:
+                ChangeEnemyColor(Color.yellow);
                 break;
         }
         Debug.Log("Enemy state: " + currentState);
