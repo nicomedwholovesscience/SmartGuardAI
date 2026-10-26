@@ -45,8 +45,8 @@ public class EnemyDetection : MonoBehaviour
         // Step 1: Decide which state to use
         if (IsPlayerNearby(detectionRange))
         {
-            ChangeState(EnemyState.Chase);
             lastKnownPosition  = player.position;
+            ChangeState(EnemyState.Chase);
         }
         else
         {
@@ -98,6 +98,11 @@ public class EnemyDetection : MonoBehaviour
                 break;
         }
         Debug.Log("Enemy state: " + currentState);
+    }
+    
+    void ForgetPlayerPosition()
+    {
+        lastKnownPosition  = Vector3.zero;
     }
 
     void Patrol()
