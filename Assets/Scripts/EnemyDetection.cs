@@ -3,46 +3,52 @@ using UnityEngine;
 
 public class EnemyDetection : MonoBehaviour
 {
+    // Possible AI states
+    public enum EnemyState
+    {
+        Patrol,
+        Chase
+    }
+
     public Transform player;
+    public Transform[] patrolPoints;
 
     public float detectionRange = 3f;
     public float moveSpeed = 2f;
     public float stoppingDistance = 1f;
 
-    public Transform[] patrolPoints;
-
     private int currentPatrolIndex = 0;
-    private bool playerDetected = false;
+
+    // Our Enemy starts in Patrol
+    private EnemyState currentState = EnemyState.Patrol;
 
     void Update()
-    {
-        CheckPlayerDistance();
-    }
-
-    void CheckPlayerDistance()
     {
         if (player == null)
         {
             return;
         }
 
+        // Step 1: Decide which state to use
         if (IsPlayerNearby(detectionRange))
         {
-            if (playerDetected == false)
-            {
-                OnPlayerDetected();
-            }
-
-            ChasePlayer();
+            ChangeState(EnemyState.Chase);
         }
         else
         {
-            if (playerDetected == true)
-            {
-                OnPlayerLost();
-            }
+            ChangeState(EnemyState.Patrol);
+        }
 
-            Patrol();
+        // Step 2: Execute the current behavior
+        switch (currentState)
+        {
+            case EnemyState.Patrol:
+                Patrol();
+                break;
+
+            case EnemyState.Chase:
+                ChasePlayer();
+                break;
         }
     }
 
@@ -56,21 +62,16 @@ public class EnemyDetection : MonoBehaviour
         return distance < range;
     }
 
-    void ChasePlayer()
+    void ChangeState(EnemyState newState)
     {
-        float distance = Vector3.Distance(
-            transform.position,
-            player.position
-        );
-
-        if (distance > stoppingDistance)
+        if (currentState == newState)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                player.position,
-                moveSpeed * Time.deltaTime
-            );
+            return;
         }
+
+        currentState = newState;
+
+        Debug.Log("Enemy state: " + currentState);
     }
 
     void Patrol()
@@ -106,15 +107,20 @@ public class EnemyDetection : MonoBehaviour
         }
     }
 
-    void OnPlayerDetected()
+    void ChasePlayer()
     {
-        Debug.Log("Player detected!");
-        playerDetected = true;
-    }
+        float distance = Vector3.Distance(
+            transform.position,
+            player.position
+        );
 
-    void OnPlayerLost()
-    {
-        Debug.Log("Player lost!");
-        playerDetected = false;
+        if (distance > stoppingDistance)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                player.position,
+                moveSpeed * Time.deltaTime
+            );
+        }
     }
 }

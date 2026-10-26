@@ -721,12 +721,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 543245695}
-  detectionRange: 3
-  moveSpeed: 2
-  stoppingDistance: 1
   patrolPoints:
   - {fileID: 1910814999}
   - {fileID: 41995845}
+  detectionRange: 3
+  moveSpeed: 2
+  stoppingDistance: 1
 --- !u!65 &1082314071
 BoxCollider:
   m_ObjectHideFlags: 0
