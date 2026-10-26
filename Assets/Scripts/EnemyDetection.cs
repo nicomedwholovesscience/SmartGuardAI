@@ -10,6 +10,8 @@ public class EnemyDetection : MonoBehaviour
         Chase
     }
 
+    private Renderer enemyRenderer;
+    
     public Transform player;
     public Transform[] patrolPoints;
 
@@ -24,7 +26,8 @@ public class EnemyDetection : MonoBehaviour
     
     void Start()
     {
-        GetComponent<Renderer>().material.color = Color.green;
+        enemyRenderer = GetComponent<Renderer>();
+        enemyRenderer.material.color = Color.green;
     }
 
     void Update()
@@ -76,6 +79,17 @@ public class EnemyDetection : MonoBehaviour
 
         currentState = newState;
 
+        // Add your color-changing logic here.
+        switch (currentState)
+        {
+            case EnemyState.Patrol:
+                ChangeEnemyColor(Color.green);
+                break;
+
+            case EnemyState.Chase:
+                ChangeEnemyColor(Color.red);
+                break;
+        }
         Debug.Log("Enemy state: " + currentState);
     }
 
@@ -105,6 +119,12 @@ public class EnemyDetection : MonoBehaviour
             currentPatrolIndex =
                 (currentPatrolIndex + 1) % patrolPoints.Length;
         }
+    }
+
+    void ChangeEnemyColor(Color newColor)
+    {
+        // Write your code here.
+        enemyRenderer.material.color = newColor;
     }
 
     void ChasePlayer()
