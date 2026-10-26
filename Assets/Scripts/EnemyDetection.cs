@@ -21,6 +21,11 @@ public class EnemyDetection : MonoBehaviour
 
     // Our Enemy starts in Patrol
     private EnemyState currentState = EnemyState.Patrol;
+    
+    void Start()
+    {
+        GetComponent<Renderer>().material.color = Color.green;
+    }
 
     void Update()
     {
@@ -95,12 +100,7 @@ public class EnemyDetection : MonoBehaviour
             moveSpeed * Time.deltaTime
         );
 
-        float distance = Vector3.Distance(
-            transform.position,
-            target.position
-        );
-
-        if (distance < 0.1f)
+        if (HasReachedPatrolPoint(target, 0.5f)) 
         {
             currentPatrolIndex =
                 (currentPatrolIndex + 1) % patrolPoints.Length;
@@ -123,4 +123,18 @@ public class EnemyDetection : MonoBehaviour
             );
         }
     }
+    
+    bool HasReachedPatrolPoint(Transform point, float arrivalDistance)
+    {
+        // 1. Calculate the distance to point.
+        
+        float distance = Vector3.Distance(
+            transform.position,
+            point.position
+        );
+        
+        return distance < arrivalDistance;
+    
+    }
+
 }
