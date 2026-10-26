@@ -19,12 +19,7 @@ public class EnemyDetection : MonoBehaviour
             return;
         }
 
-        float distance = Vector3.Distance(
-            transform.position,
-            player.position
-        );
-
-        if (distance < detectionRange)
+        if (IsPlayerNearby(detectionRange))
         {
             if (playerDetected == false)
             {
@@ -40,22 +35,25 @@ public class EnemyDetection : MonoBehaviour
         }
     }
 
+    bool IsPlayerNearby(float range)
+    {
+        float distance = Vector3.Distance(
+            transform.position,
+            player.position
+        );
+
+        return distance < range;
+    }
+
     void OnPlayerDetected()
     {
         Debug.Log("Player detected!");
         playerDetected = true;
-
-        OnEnemyAlert();
     }
 
     void OnPlayerLost()
     {
         Debug.Log("Player lost!");
         playerDetected = false;
-    }
-    
-    void OnEnemyAlert()
-    {
-        Debug.Log("Enemy is now alert!");
     }
 }
