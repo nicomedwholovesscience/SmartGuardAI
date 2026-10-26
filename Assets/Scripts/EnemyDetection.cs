@@ -3,7 +3,10 @@ using UnityEngine;
 public class EnemyDetection : MonoBehaviour
 {
     public Transform player;
+
     public float detectionRange = 3f;
+    public float moveSpeed = 4f;
+    public float stoppingDistance = 1f;
 
     private bool playerDetected = false;
 
@@ -25,6 +28,8 @@ public class EnemyDetection : MonoBehaviour
             {
                 OnPlayerDetected();
             }
+
+            ChasePlayer();
         }
         else
         {
@@ -43,6 +48,23 @@ public class EnemyDetection : MonoBehaviour
         );
 
         return distance < range;
+    }
+
+    void ChasePlayer()
+    {
+        float distance = Vector3.Distance(
+            transform.position,
+            player.position
+        );
+
+        if (distance > stoppingDistance)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                player.position,
+                moveSpeed * Time.deltaTime
+            );
+        }
     }
 
     void OnPlayerDetected()

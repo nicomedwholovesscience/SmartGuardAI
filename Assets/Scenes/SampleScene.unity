@@ -607,6 +607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25eda4727d92e254f8fab3e879d91275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,6 +691,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 543245695}
   detectionRange: 3
+  moveSpeed: 4
+  stoppingDistance: 1
 --- !u!65 &1082314071
 BoxCollider:
   m_ObjectHideFlags: 0
