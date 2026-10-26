@@ -9,6 +9,11 @@ public class EnemyDetection : MonoBehaviour
 
     void Update()
     {
+        CheckPlayerDistance();
+    }
+
+    void CheckPlayerDistance()
+    {
         if (player == null)
         {
             return;
@@ -23,17 +28,34 @@ public class EnemyDetection : MonoBehaviour
         {
             if (playerDetected == false)
             {
-                Debug.Log("Player detected!");
-                playerDetected = true;
+                OnPlayerDetected();
             }
         }
         else
         {
             if (playerDetected == true)
             {
-                Debug.Log("Player lost!");
-                playerDetected = false;
+                OnPlayerLost();
             }
         }
+    }
+
+    void OnPlayerDetected()
+    {
+        Debug.Log("Player detected!");
+        playerDetected = true;
+
+        OnEnemyAlert();
+    }
+
+    void OnPlayerLost()
+    {
+        Debug.Log("Player lost!");
+        playerDetected = false;
+    }
+    
+    void OnEnemyAlert()
+    {
+        Debug.Log("Enemy is now alert!");
     }
 }
