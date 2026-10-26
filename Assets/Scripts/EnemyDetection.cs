@@ -24,6 +24,7 @@ public class EnemyDetection : MonoBehaviour
     private float waitTimer = 0f;
 
     private int currentPatrolIndex = 0;
+    private Vector3 lastKnownPosition;
 
     // Our Enemy starts in Patrol
     private EnemyState currentState = EnemyState.Patrol;
@@ -45,6 +46,7 @@ public class EnemyDetection : MonoBehaviour
         if (IsPlayerNearby(detectionRange))
         {
             ChangeState(EnemyState.Chase);
+            lastKnownPosition  = player.position;
         }
         else
         {
@@ -87,6 +89,7 @@ public class EnemyDetection : MonoBehaviour
         {
             case EnemyState.Patrol:
                 ChangeEnemyColor(Color.green);
+                Debug.Log("Last known position: " + lastKnownPosition);
                 break;
 
             case EnemyState.Chase:
