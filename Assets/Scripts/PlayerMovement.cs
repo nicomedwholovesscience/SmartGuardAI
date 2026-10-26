@@ -2,19 +2,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-   
-    void Start()
+    public float moveSpeed = 5f;
+
+    void Update()
     {
-        float distance = 15f;
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
 
-        if (distance < 10f)
-        {
-            Debug.Log("Player detected!");
-        }
-        else
-        {
-            Debug.Log("Player is too far away.");
-        }
+        Vector3 direction = new Vector3(horizontal, 0f, vertical);
+
+        transform.position += direction.normalized * moveSpeed * Time.deltaTime;
     }
-
 }

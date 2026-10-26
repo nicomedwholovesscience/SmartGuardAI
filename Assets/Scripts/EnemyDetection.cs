@@ -5,6 +5,8 @@ public class EnemyDetection : MonoBehaviour
     public Transform player;
     public float detectionRange = 3f;
 
+    private bool playerDetected = false;
+
     void Update()
     {
         if (player == null)
@@ -19,7 +21,19 @@ public class EnemyDetection : MonoBehaviour
 
         if (distance < detectionRange)
         {
-            Debug.Log("Player detected!");
+            if (playerDetected == false)
+            {
+                Debug.Log("Player detected!");
+                playerDetected = true;
+            }
+        }
+        else
+        {
+            if (playerDetected == true)
+            {
+                Debug.Log("Player lost!");
+                playerDetected = false;
+            }
         }
     }
 }
