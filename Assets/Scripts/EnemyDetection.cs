@@ -27,6 +27,8 @@ public class EnemyDetection : MonoBehaviour
     public float searchWaitDuration = 3f;
     private float searchWaitTimer = 0f;
     
+    public float viewAngle = 90f;
+    
 
     private int currentPatrolIndex = 0;
     private Vector3 lastKnownPosition;
@@ -47,8 +49,10 @@ public class EnemyDetection : MonoBehaviour
             return;
         }
 
+        CheckPlayerAngle();
+
         // Step 1: Decide which state to use
-        if (IsPlayerNearby(detectionRange))
+        if (IsPlayerNearby(detectionRange) && IsPlayerWithinViewAngle())
         {
             lastKnownPosition  = player.position;
             ChangeState(EnemyState.Chase);
@@ -174,6 +178,9 @@ public class EnemyDetection : MonoBehaviour
         }
         else
         {
+            Vector3 lookPosition = target.position;
+            lookPosition.y = transform.position.y;
+            transform.LookAt(lookPosition);
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 target.position,
@@ -219,5 +226,90 @@ public class EnemyDetection : MonoBehaviour
         return distance < arrivalDistance;
     
     }
+    void CheckPlayerAngle()
+    {
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+        
+        Debug.Log("Angle to player: " + angleToPlayer);
+        
+        if (angleToPlayer < 45f)
+        {
+            Debug.Log("Player is inside FOV");
+        }
+        else
+        {
+            Debug.Log("Player is outside FOV");
+        }
+       
+    }
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        Vector3 forward = Vector3.ProjectOnPlane(
+            transform.forward,
+            Vector3.up
+        ).normalized;
+
+        Vector3 leftDirection = Quaternion.AngleAxis(
+            -viewAngle / 2f,
+            Vector3.up
+        ) * forward;
+
+        UnityEditor.Handles.color =
+            new Color(1f, 1f, 0f, 0.3f);
+
+        UnityEditor.Handles.DrawSolidArc(
+            transform.position + Vector3.up * 0.1f,
+            Vector3.up,
+            leftDirection,
+            viewAngle,
+            detectionRange
+        );
+    }
+#endif
+    
+    bool IsPlayerWithinViewAngle()
+    {
+        Vector3 directionToPlayer =
+            Vector3.ProjectOnPlane(
+                player.position - transform.position,
+                Vector3.up
+            );
+
+        Vector3 forward =
+            Vector3.ProjectOnPlane(
+                transform.forward,
+                Vector3.up
+            );
+
+        float angleToPlayer =
+            Vector3.Angle(forward, directionToPlayer);
+
+        // Your code goes here.
+        return angleToPlayer <=  (viewAngle / 2f);
+    }
+    
+    void RotateTowardsTarget(Vector3 targetPosition)
+    {
+        Vector3 direction = targetPosition - transform.position;
+
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation =
+                Quaternion.LookRotation(direction);
+
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                180f * Time.deltaTime
+            );
+        }
+    }
 
 }
+
+
