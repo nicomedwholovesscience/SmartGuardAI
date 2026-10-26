@@ -16,7 +16,8 @@ public class EnemyDetection : MonoBehaviour
     public Transform[] patrolPoints;
 
     public float detectionRange = 3f;
-    public float moveSpeed = 2f;
+    public float patrolSpeed = 2f;
+    public float chaseSpeed = 4f;
     public float stoppingDistance = 1f;
     
     public float waitDuration = 2f;
@@ -130,7 +131,7 @@ public class EnemyDetection : MonoBehaviour
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 target.position,
-                moveSpeed * Time.deltaTime
+                patrolSpeed * Time.deltaTime
             );
             
             waitTimer = 0f;
@@ -155,7 +156,7 @@ public class EnemyDetection : MonoBehaviour
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 player.position,
-                moveSpeed * Time.deltaTime
+                chaseSpeed * Time.deltaTime
             );
         }
     }
