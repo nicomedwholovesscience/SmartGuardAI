@@ -18,6 +18,9 @@ public class EnemyDetection : MonoBehaviour
     public float detectionRange = 3f;
     public float moveSpeed = 2f;
     public float stoppingDistance = 1f;
+    
+    public float waitDuration = 2f;
+    private float waitTimer = 0f;
 
     private int currentPatrolIndex = 0;
 
@@ -78,8 +81,7 @@ public class EnemyDetection : MonoBehaviour
         }
 
         currentState = newState;
-
-        // Add your color-changing logic here.
+        
         switch (currentState)
         {
             case EnemyState.Patrol:
@@ -88,6 +90,7 @@ public class EnemyDetection : MonoBehaviour
 
             case EnemyState.Chase:
                 ChangeEnemyColor(Color.red);
+                waitTimer = 0f;
                 break;
         }
         Debug.Log("Enemy state: " + currentState);
@@ -108,16 +111,29 @@ public class EnemyDetection : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target.position,
-            moveSpeed * Time.deltaTime
-        );
+       
 
-        if (HasReachedPatrolPoint(target, 0.5f)) 
+        if (HasReachedPatrolPoint(target, 0.5f))
         {
-            currentPatrolIndex =
-                (currentPatrolIndex + 1) % patrolPoints.Length;
+            waitTimer += Time.deltaTime;
+
+            if (waitTimer >= waitDuration)
+            {
+                currentPatrolIndex =
+                    (currentPatrolIndex + 1) % patrolPoints.Length;
+                
+                waitTimer = 0f;
+            }
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                target.position,
+                moveSpeed * Time.deltaTime
+            );
+            
+            waitTimer = 0f;
         }
     }
 
