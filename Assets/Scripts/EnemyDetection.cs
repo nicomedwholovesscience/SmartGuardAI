@@ -24,6 +24,9 @@ public class EnemyDetection : MonoBehaviour
     
     public float waitDuration = 2f;
     private float waitTimer = 0f;
+    public float searchWaitDuration = 3f;
+    private float searchWaitTimer = 0f;
+    
 
     private int currentPatrolIndex = 0;
     private Vector3 lastKnownPosition;
@@ -85,11 +88,15 @@ public class EnemyDetection : MonoBehaviour
             lastKnownPosition
         );
 
-        // 2. If distance is less than 0.5f,
-        //    switch to Patrol.
+// Wait at the last known position before resuming patrol.
         if (distance < 0.5f)
         {
-            ChangeState(EnemyState.Patrol);
+            searchWaitTimer += Time.deltaTime;
+
+            if (searchWaitTimer >= searchWaitDuration)
+            {
+                ChangeState(EnemyState.Patrol);
+            }
         }
     }
 
@@ -125,6 +132,7 @@ public class EnemyDetection : MonoBehaviour
                 break;
             case EnemyState.Search:
                 ChangeEnemyColor(Color.yellow);
+                searchWaitTimer = 0f;
                 break;
         }
         Debug.Log("Enemy state: " + currentState);
