@@ -206,6 +206,10 @@ public class EnemyDetection : MonoBehaviour
 
         if (distance > stoppingDistance)
         {
+            Vector3 lookPosition = player.position;
+            lookPosition.y = transform.position.y;
+            transform.LookAt(lookPosition);
+            
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 player.position,
